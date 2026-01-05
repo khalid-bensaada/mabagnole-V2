@@ -2,8 +2,6 @@
 session_start();
 require_once '../classes/client.php';
 
-
-
 $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
