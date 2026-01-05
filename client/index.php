@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../classes/Vehicule.php';
+
+
+$vehicule = new Vehicule();
+
+$allVehicles = $vehicule->selectAll(true);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,39 +47,56 @@
     </header>
 
     <main class="max-w-7xl mx-auto py-12 px-6">
-        <h3 class="text-2xl font-bold text-gray-800 mb-8">Available Vehicles</h3>
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-3xl font-bold mb-6 text-center">Toutes les voitures disponibles</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <?php if (!empty($allVehicles)): ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <?php foreach ($allVehicles as $v): ?>
+                        <div
+                            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                            <div class="relative h-48 bg-gray-200">
+                                <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=500&q=80"
+                                    alt="<?= htmlspecialchars($v['modele']) ?>" class="w-full h-full object-cover">
+                                <?php if ($v['disponibilite']): ?>
+                                    <span
+                                        class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Disponible</span>
+                                <?php else: ?>
+                                    <span
+                                        class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">Indisponible</span>
+                                <?php endif; ?>
+                            </div>
 
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div class="relative h-48 bg-gray-200">
-                    <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=500&q=80"
-                        alt="Car Name" class="w-full h-full object-cover">
-                    <span
-                        class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Available</span>
+                            <div class="p-5">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-xl font-bold text-gray-800"><?= htmlspecialchars($v['modele']) ?></h4>
+                                    <span class="text-blue-600 font-extrabold"><?= number_format($v['prix'], 2) ?> <span
+                                            class="text-xs text-gray-400">MAD / jour</span></span>
+                                </div>
+
+                                <p class="text-gray-500 text-sm mb-4">Category: <span
+                                        class="font-medium"><?= htmlspecialchars($v['categorie']) ?></span></p>
+
+                                <div class="flex items-center space-x-4 text-gray-400 text-sm mb-6 border-t pt-4">
+                                    <span><i class="fas fa-gas-pump mr-1"></i> Diesel</span>
+                                    <span><i class="fas fa-cog mr-1"></i> Auto</span>
+                                    <span><i class="fas fa-user-friends mr-1"></i> 5 Seats</span>
+                                </div>
+
+                                <!-- Button View Details -->
+                                <button
+                                    class="w-full bg-gray-900 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition"><a
+                                        href="details.php">View Details</a>
+
+                                </button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
                 </div>
-
-                <div class="p-5">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="text-xl font-bold text-gray-800">Range Rover Sport</h4>
-                        <span class="text-blue-600 font-extrabold">$85<span
-                                class="text-xs text-gray-400">/day</span></span>
-                    </div>
-
-                    <p class="text-gray-500 text-sm mb-4">Category: <span class="font-medium">SUV / Luxury</span></p>
-
-                    <div class="flex items-center space-x-4 text-gray-400 text-sm mb-6 border-t pt-4">
-                        <span><i class="fas fa-gas-pump mr-1"></i> Diesel</span>
-                        <span><i class="fas fa-cog mr-1"></i> Auto</span>
-                        <span><i class="fas fa-user-friends mr-1"></i> 5 Seats</span>
-                    </div>
-
-                    <a href="details.php?id=1"
-                        class="block w-full text-center bg-gray-900 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition">
-                        View Details
-                    </a>
-                </div>
-            </div>
+            <?php else: ?>
+                <p class="text-center text-gray-600">Aucune voiture disponible pour le moment.</p>
+            <?php endif; ?>
         </div>
     </main>
 

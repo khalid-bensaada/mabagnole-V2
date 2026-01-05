@@ -1,35 +1,36 @@
 <?php
 require_once 'Database.php';
 
-class vehicule extends Database
+class Vehicule extends Database
 {
-
-    private $id;
-    private $categorie;
+    private $id_v;
+    private $categorie_id;
     private $modele;
     private $prix;
-    private $disponible;
-    private $description;
-    private $created;
+    private $disponibilite;
+    private $description_v;
+    private $created_v;
 
-    public function __construct($id, $categorie, $modele, $prix, $disponible, $description, $created)
+    public function __construct($id_v = 0, $categorie_id = 0, $modele = "", $prix = 0, $disponibilite = 1, $description_v = "", $created_v = null)
     {
-        $this->id = $id;
-        $this->categorie = $categorie;
+        parent::__construct(); 
+        $this->id_v = $id_v;
+        $this->categorie_id = $categorie_id;
         $this->modele = $modele;
         $this->prix = $prix;
-        $this->disponible = $disponible;
-        $this->description = $description;
-        $this->created = $created;
+        $this->disponibilite = $disponibilite;
+        $this->description_v = $description_v;
+        $this->created_v = $created_v ?? date('Y-m-d H:i:s');
     }
 
-    public function getIdd()
+    // GETTERS
+    public function getId()
     {
-        return $this->id;
+        return $this->id_v;
     }
-    public function getCatigori()
+    public function getCategorieId()
     {
-        return $this->categorie;
+        return $this->categorie_id;
     }
     public function getModele()
     {
@@ -39,24 +40,23 @@ class vehicule extends Database
     {
         return $this->prix;
     }
-    public function getDisponible()
+    public function getDisponibilite()
     {
-        return $this->disponible;
+        return $this->disponibilite;
     }
     public function getDescription()
     {
-        return $this->description;
+        return $this->description_v;
     }
     public function getCreated()
     {
-        return $this->created;
+        return $this->created_v;
     }
 
-    //SETTERS
-
-    public function setCatigori($catigorie)
+    // SETTERS
+    public function setCategorieId($categorie_id)
     {
-        $this->catigorie = $catigorie;
+        $this->categorie_id = $categorie_id;
     }
     public function setModele($modele)
     {
@@ -66,49 +66,107 @@ class vehicule extends Database
     {
         $this->prix = $prix;
     }
-    public function setDisponible($disponible)
+    public function setDisponibilite($disponibilite)
     {
-        $this->disponible = $disponible;
+        $this->disponibilite = $disponibilite;
+    }
+    public function setDescription($description_v)
+    {
+        $this->description_v = $description_v;
+    }
+    public function setCreated($created_v)
+    {
+        $this->created_v = $created_v;
     }
 
-    public function setDescription($description)
+    // CREATE
+    public function create()
     {
-        $this->description = $description;
-    }
-    public function setCreated($created)
-    {
-        $this->created = $created;
+        $sql = "INSERT INTO vehicule (catecorie_id, modele, prix, disponibilite, description_v) 
+                VALUES (:categorie_id, :modele, :prix, :disponibilite, :description_v)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':categorie_id' => $this->categorie_id,
+            ':modele' => $this->modele,
+            ':prix' => $this->prix,
+            ':disponibilite' => $this->disponibilite,
+            ':description_v' => $this->description_v
+        ]);
     }
 
-    // SELECT vehicules 
-    public function SelectV()
+    // READ all vehicles 
+    public function selectAll($onlyAvailable = true)
     {
-        $sql = "
-    SELECT v.id, v.modele, v.prix, v.disponible, v.description_v,
-           c.name_c AS categorie
-    FROM vehicules v
-    JOIN categorie c ON v.categorie_id = c.id
-    WHERE v.disponible = TRUE
-";
+        $sql = "SELECT v.*, c.name_c AS categorie 
+                FROM vehicule v 
+                JOIN categorie c ON v.catecorie_id = c.id_c";
+        if ($onlyAvailable) {
+            $sql .= " WHERE v.disponibilite = TRUE";
+        }
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
-        $vehicules = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function recherchM($keyword)
-    {
-        $sql = "SELECT * FROM vehicule WHERE modele LIKE : keyword OR caracteristiques LIKE :keyword";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['keyword' => "%$keyword%"]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Filter with categorie
-    public function filterC($categorie_id)
+    // READ one vehicle by ID
+    public function selectById($id)
     {
-        $sql = "SELECT * FROM vehicule WHERE categorie_id = ?";
+        $sql = "SELECT v.*, c.name_c AS categorie 
+                FROM vehicule v 
+                JOIN categorie c ON v.catecorie_id = c.id_c 
+                WHERE v.id_v = :id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['catigo' => $categorie_id]);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // UPDATE
+    public function update($id)
+    {
+        $sql = "UPDATE vehicule 
+                SET catecorie_id = :categorie_id, modele = :modele, prix = :prix, 
+                    disponibilite = :disponibilite, description_v = :description_v
+                WHERE id_v = :id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':categorie_id' => $this->categorie_id,
+            ':modele' => $this->modele,
+            ':prix' => $this->prix,
+            ':disponibilite' => $this->disponibilite,
+            ':description_v' => $this->description_v,
+            ':id' => $id
+        ]);
+    }
+
+    // DELETE
+    public function delete($id)
+    {
+        $sql = "DELETE FROM vehicule WHERE id_v = :id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    // SEARCH by modele
+    public function searchByModele($keyword)
+    {
+        $sql = "SELECT v.*, c.name_c AS categorie 
+                FROM vehicule v 
+                JOIN categorie c ON v.catecorie_id = c.id_c
+                WHERE v.modele LIKE :keyword";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':keyword' => "%$keyword%"]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // FILTER by category
+    public function filterByCategorie($categorie_id)
+    {
+        $sql = "SELECT v.*, c.name_c AS categorie 
+                FROM vehicule v 
+                JOIN categorie c ON v.catecorie_id = c.id_c
+                WHERE v.catecorie_id = :cat_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':cat_id' => $categorie_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
