@@ -21,22 +21,22 @@
                     <i class="fas fa-chart-pie w-5"></i>
                     <span class="font-bold">Dashboard</span>
                 </a>
-                <a href="#"
+                <a href="vehicule.php"
                     class="flex items-center space-x-3 p-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
                     <i class="fas fa-car w-5"></i>
                     <span>Vehicles</span>
                 </a>
-                <a href="#"
+                <a href="reservation.php"
                     class="flex items-center space-x-3 p-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
                     <i class="fas fa-calendar-check w-5"></i>
                     <span>Reservations</span>
                 </a>
-                <a href="#"
+                <a href="clients.php"
                     class="flex items-center space-x-3 p-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
                     <i class="fas fa-users w-5"></i>
                     <span>Clients</span>
                 </a>
-                <a href="#"
+                <a href="reviews.php"
                     class="flex items-center space-x-3 p-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
                     <i class="fas fa-star w-5"></i>
                     <span>Reviews</span>
