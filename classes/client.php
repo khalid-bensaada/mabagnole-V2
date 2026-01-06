@@ -2,25 +2,24 @@
 require_once 'Database.php';
 class Client extends Database
 {
-    public $client;
+    
     private $id;
     private $name;
     private $email;
     private $password;
     private $role;
     private $timeC;
-    public function __construct( int $id, string $name = "", string $email = "", string $password = "", string $role = "", float $timeC)
-    {
-        parent::__construct();
-        $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
-        $this->role = $role;
-        $this->timeC = $timeC;
-        
+    public function __construct(int $id = 0, string $name = "", string $email = "", string $password = "", string $role = "", float $timeC = 0.0)
+{
+    parent::__construct();
+    $this->id = $id;
+    $this->name = $name;
+    $this->email = $email;
+    $this->password = $password;
+    $this->role = $role;
+    $this->timeC = $timeC;
+}
 
-    }
     public function getId(): int
     {
         return $this->id;
@@ -103,5 +102,20 @@ class Client extends Database
     {
         return password_verify($password, $this->password);
     }
+    
+    public function countAll()
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM client");
+        return $stmt->fetchColumn();
+    }
+
+    
+    public function getLast($limit = 5)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM client ORDER BY id DESC LIMIT ?");
+        $stmt->execute([$limit]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
 ?>

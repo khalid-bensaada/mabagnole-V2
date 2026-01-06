@@ -1,3 +1,43 @@
+<?php
+require_once '../classes/Database.php';
+require_once '../classes/client.php';
+require_once '../classes/vehicule.php';
+require_once '../classes/reservation.php';
+require_once '../classes/avis.php';
+require_once '../classes/categori.php';
+
+
+$client = new Client(0);
+$vehicule = new Vehicule();
+$reservation = new Reservation(0, 0, "", "",0);
+
+$avis = new Avis();
+$categorie = new Categorie(0, '', '');
+
+$totalRevenue = 0;
+$totalBookings = 0;
+$totalFleet = 0;
+$newClients = 0;
+
+
+$reservationsAll = $reservation->getAll();
+foreach ($reservationsAll as $r) {
+    $totalRevenue += $r['prix'];
+}
+$totalBookings = count($reservationsAll);
+
+
+$vehiculesAll = $vehicule->selectAll();
+$totalFleet = count($vehiculesAll);
+
+
+$clientsAll = $client->getAll ?? [];
+$newClients = count($clientsAll);
+
+
+$recentReservations = $reservation->getAll();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,7 +95,7 @@
             <header class="bg-white border-b border-slate-200 p-6 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-slate-800">Overview Stats</h2>
                 <div class="flex items-center space-x-4">
-                    <span class="text-sm text-slate-500 italic">2026-01-05</span>
+                    <span class="text-sm text-slate-500 italic"><?= date('Y-m-d') ?></span>
                     <div
                         class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600 border border-blue-200">
                         A
@@ -73,7 +113,7 @@
                             <span class="text-green-500 text-xs font-bold">+12%</span>
                         </div>
                         <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Total Revenue</p>
-                        <h3 class="text-3xl font-black text-slate-900 mt-1">45,280 <span
+                        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= number_format($totalRevenue, 0) ?> <span
                                 class="text-sm text-slate-400">MAD</span></h3>
                     </div>
 
@@ -85,7 +125,7 @@
                             <span class="text-blue-500 text-xs font-bold">+5.2%</span>
                         </div>
                         <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Bookings</p>
-                        <h3 class="text-3xl font-black text-slate-900 mt-1">128</h3>
+                        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $totalBookings ?></h3>
                     </div>
 
                     <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
@@ -96,7 +136,7 @@
                             <span class="text-slate-400 text-xs font-bold">85% Util.</span>
                         </div>
                         <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Active Fleet</p>
-                        <h3 class="text-3xl font-black text-slate-900 mt-1">42</h3>
+                        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $totalFleet ?></h3>
                     </div>
 
                     <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
@@ -107,7 +147,7 @@
                             <span class="text-orange-500 text-xs font-bold">New</span>
                         </div>
                         <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">New Clients</p>
-                        <h3 class="text-3xl font-black text-slate-900 mt-1">15</h3>
+                        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $newClients ?></h3>
                     </div>
                 </div>
 
@@ -128,26 +168,38 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                <tr>
-                                    <td class="px-6 py-4 flex items-center space-x-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold">
-                                            AB</div>
-                                        <span class="text-sm font-bold text-slate-700">Ahmed Benani</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600 font-medium">Dacia Logan</td>
-                                    <td class="px-6 py-4 text-sm text-slate-500">Jan 05 - Jan 08</td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="px-3 py-1 bg-yellow-100 text-yellow-700 text-[10px] font-black uppercase rounded-full">Pending</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <button
-                                            class="text-blue-500 hover:text-blue-700 font-bold text-xs mr-3">Approve</button>
-                                        <button
-                                            class="text-red-400 hover:text-red-600 font-bold text-xs">Reject</button>
-                                    </td>
-                                </tr>
+                                <?php foreach ($recentReservations as $r): ?>
+                                    <tr>
+                                        <td class="px-6 py-4 flex items-center space-x-3">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold">
+                                                <?= strtoupper(substr($r['nom'], 0, 2)) ?>
+                                            </div>
+                                            <span class="text-sm font-bold text-slate-700"><?= $r['nom'] ?></span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-slate-600 font-medium"><?= $r['modele'] ?></td>
+                                        <td class="px-6 py-4 text-sm text-slate-500">
+                                            <?= date('M d', strtotime($r['date_debut'])) ?> -
+                                            <?= date('M d', strtotime($r['date_fin'])) ?></td>
+                                        <td class="px-6 py-4">
+                                            <?php
+                                            $statusColor = 'bg-green-100 text-green-700';
+                                            if ($r['statut'] == 'pending')
+                                                $statusColor = 'bg-yellow-100 text-yellow-700';
+                                            elseif ($r['statut'] == 'annulée')
+                                                $statusColor = 'bg-red-100 text-red-700';
+                                            ?>
+                                            <span
+                                                class="px-3 py-1 <?= $statusColor ?> text-[10px] font-black uppercase rounded-full"><?= ucfirst($r['statut']) ?></span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <button
+                                                class="text-blue-500 hover:text-blue-700 font-bold text-xs mr-3">Approve</button>
+                                            <button
+                                                class="text-red-400 hover:text-red-600 font-bold text-xs">Reject</button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>

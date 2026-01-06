@@ -5,7 +5,7 @@ require_once '../classes/Vehicule.php';
 
 $vehicule = new Vehicule();
 
-$allVehicles = $vehicule->selectAll(true);
+$allVehicles = $vehicule->selectAll();
 
 ?>
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ $allVehicles = $vehicule->selectAll(true);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaBagnole | Home</title>
+    <title> MaBagnole | Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -24,12 +24,12 @@ $allVehicles = $vehicule->selectAll(true);
     <nav class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-50">
         <h1 class="text-2xl font-bold text-blue-600">🚗 MaBagnole</h1>
         <div class="flex items-center space-x-6">
-            <a href="blog.php" class="text-gray-600 hover:text-blue-600">Blog</a>
+            
             <div class="flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg">
                 <i class="fas fa-user-circle text-blue-600"></i>
                 <span class="font-medium text-blue-800 text-sm">Welcome, Client!</span>
             </div>
-            <a href="logout.php" class="text-red-500 hover:text-red-700 text-sm font-bold">Logout</a>
+            <a href="../connection.php" class="text-red-500 hover:text-red-700 text-sm font-bold">Logout</a>
         </div>
     </nav>
 

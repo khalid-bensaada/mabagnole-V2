@@ -3,31 +3,30 @@ require_once 'Database.php';
 
 class Vehicule extends Database
 {
-    private $id_v;
+    
     private $categorie_id;
     private $modele;
     private $prix;
     private $disponibilite;
     private $description_v;
     private $created_v;
+    private $image;
 
-    public function __construct($id_v = 0, $categorie_id = 0, $modele = "", $prix = 0, $disponibilite = 1, $description_v = "", $created_v = null)
+    public function __construct( $categorie_id = 0, $modele = "", $prix = 0, $disponibilite = 1, $description_v = "", $created_v = null, $image)
     {
-        parent::__construct(); 
-        $this->id_v = $id_v;
+        parent::__construct();
+        
         $this->categorie_id = $categorie_id;
         $this->modele = $modele;
         $this->prix = $prix;
         $this->disponibilite = $disponibilite;
         $this->description_v = $description_v;
         $this->created_v = $created_v ?? date('Y-m-d H:i:s');
+        $this->image = $image;
     }
 
     // GETTERS
-    public function getId()
-    {
-        return $this->id_v;
-    }
+    
     public function getCategorieId()
     {
         return $this->categorie_id;
@@ -52,6 +51,17 @@ class Vehicule extends Database
     {
         return $this->created_v;
     }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
 
     // SETTERS
     public function setCategorieId($categorie_id)
@@ -82,30 +92,29 @@ class Vehicule extends Database
     // CREATE
     public function create()
     {
-        $sql = "INSERT INTO vehicule (catecorie_id, modele, prix, disponibilite, description_v) 
-                VALUES (:categorie_id, :modele, :prix, :disponibilite, :description_v)";
+        
+        $sql = "INSERT INTO vehicule (categorie_id, modele, prix, disponibilite, description_v, image) 
+        VALUES (:categorie_id, :modele, :prix, :disponibilite, :description_v, :image)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':categorie_id' => $this->categorie_id,
             ':modele' => $this->modele,
             ':prix' => $this->prix,
             ':disponibilite' => $this->disponibilite,
-            ':description_v' => $this->description_v
+            ':description_v' => $this->description_v,
+            ':image' => $this->image
         ]);
+
     }
 
+
     // READ all vehicles 
-    public function selectAll($onlyAvailable = true)
+    public function selectAll()
     {
         $sql = "SELECT v.*, c.name_c AS categorie 
-                FROM vehicule v 
-                JOIN categorie c ON v.catecorie_id = c.id_c";
-        if ($onlyAvailable) {
-            $sql .= " WHERE v.disponibilite = TRUE";
-        }
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                FROM vehicule v
+                LEFT JOIN categorie c ON v.categorie_id = c.id_c";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // READ one vehicle by ID
@@ -113,7 +122,7 @@ class Vehicule extends Database
     {
         $sql = "SELECT v.*, c.name_c AS categorie 
                 FROM vehicule v 
-                JOIN categorie c ON v.catecorie_id = c.id_c 
+                JOIN categorie c ON v.categorie_id = c.id_c 
                 WHERE v.id_v = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
@@ -151,7 +160,7 @@ class Vehicule extends Database
     {
         $sql = "SELECT v.*, c.name_c AS categorie 
                 FROM vehicule v 
-                JOIN categorie c ON v.catecorie_id = c.id_c
+                JOIN categorie c ON v.categorie_id = c.id_c
                 WHERE v.modele LIKE :keyword";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':keyword' => "%$keyword%"]);
@@ -163,11 +172,25 @@ class Vehicule extends Database
     {
         $sql = "SELECT v.*, c.name_c AS categorie 
                 FROM vehicule v 
-                JOIN categorie c ON v.catecorie_id = c.id_c
-                WHERE v.catecorie_id = :cat_id";
+                JOIN categorie c ON v.categorie_id = c.id_c
+                WHERE v.categorie_id = :cat_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':cat_id' => $categorie_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function countAll()
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM vehicule");
+        return $stmt->fetchColumn();
+    }
+
+    public function countDisponible()
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM vehicule WHERE disponibilite = 1");
+        return $stmt->fetchColumn();
+    }
+
 }
+
 ?>

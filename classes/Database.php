@@ -20,5 +20,6 @@ class Database
             die("Connection failed: " . $e->getMessage());
         }
     }
+    
 }
 ?>
