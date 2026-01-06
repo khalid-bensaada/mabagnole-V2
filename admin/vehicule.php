@@ -5,10 +5,12 @@ require_once '../classes/Vehicule.php';
 require_once '../classes/Categori.php';
 
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $model = $_POST['model'] ?? '';
-    $category_id = $_POST['categorie_id'] ;
+    $model = $_POST['model'] ;
+    $category_id = (int)$_POST['category'] ;
     $price = $_POST['price'] ;
+
 
     
     $imagePath = null;
@@ -28,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     
-    $vehicule = new Vehicule(0, $model, $category_id, $price, 1, $imagePath, '');
+    $vehicule = new Vehicule($category_id, $model, $price, 1, $imagePath, '');
     $vehicule->create();
 
     header('Location: vehicule.php');
@@ -183,7 +185,7 @@ $categories = $categorieObj->getAll();
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Catégorie</label>
-                    <select name="categorie_id" required
+                    <select name="category"
                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat['id_c'] ?>"><?= htmlspecialchars($cat['name_c']) ?></option>

@@ -70,7 +70,7 @@ class Client extends Database
     // PASSWORD HASHING
     public function hash()
     {
-        $password_hash = password_hash($this->password);
+        $password_hash = password_hash($this->password , PASSWORD_DEFAULT);
         $this->password = $password_hash;
     }
     // CREATION A CLIENT

@@ -12,6 +12,11 @@ CREATE TABLE client (
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
+
+
+INSERT INTO vehicule (categorie_id, modele, prix, disponibilite, description_v, image) 
+        VALUES (2, "BMW", 123, 1, "HHH", "NJJJN");
+
 CREATE TABLE categorie (
     id_c INT AUTO_INCREMENT PRIMARY KEY ,
     name_c VARCHAR (150) NOT NULL ,

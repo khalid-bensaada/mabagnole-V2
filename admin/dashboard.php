@@ -7,7 +7,7 @@ require_once '../classes/avis.php';
 require_once '../classes/categori.php';
 
 
-$client = new Client(0);
+$client = new Client();
 $vehicule = new Vehicule();
 $reservation = new Reservation(0, 0, "", "",0);
 

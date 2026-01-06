@@ -12,7 +12,7 @@ class Vehicule extends Database
     private $created_v;
     private $image;
 
-    public function __construct( $categorie_id = 0, $modele = "", $prix = 0, $disponibilite = 1, $description_v = "", $created_v = null, $image)
+    public function __construct( $categorie_id = 0 , $modele = "", $prix = 0, $disponibilite = 1, $description_v = "", $created_v = null, $image ="")
     {
         parent::__construct();
         
@@ -21,7 +21,7 @@ class Vehicule extends Database
         $this->prix = $prix;
         $this->disponibilite = $disponibilite;
         $this->description_v = $description_v;
-        $this->created_v = $created_v ?? date('Y-m-d H:i:s');
+        $this->created_v = $created_v ;
         $this->image = $image;
     }
 
