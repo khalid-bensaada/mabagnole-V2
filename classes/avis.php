@@ -3,11 +3,11 @@ require_once 'Database.php';
 
 class Avis extends Database
 {
-    private ?int $id;
-    private ?int $client_id;
-    private ?int $vehicule_id;
-    private ?int $note;
-    private ?string $commentaire;
+    private int $id;
+    private int $client_id;
+    private int $vehicule_id;
+    private int $note;
+    private string $commentaire;
     private ?string $deleted_at;
     private ?string $created_at;
 
