@@ -20,7 +20,7 @@ class Avis extends Database
         $id = null
     ) {
         parent::__construct();
-        $this->id = $id;
+        
         $this->client_id = $client_id;
         $this->vehicule_id = $vehicule_id;
         $this->note = $note;

@@ -29,7 +29,7 @@ $allVehicles = $vehicule->selectAll();
                 <i class="fas fa-user-circle text-blue-600"></i>
                 <span class="font-medium text-blue-800 text-sm">Welcome, Client!</span>
             </div>
-            <a href="../connection.php" class="text-red-500 hover:text-red-700 text-sm font-bold">Logout</a>
+            <a href="blog.php" class="text-red-500 hover:text-red-700 text-sm font-bold">blog</a>
         </div>
     </nav>
 

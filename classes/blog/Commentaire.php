@@ -1,7 +1,7 @@
 <?php
 require_once 'Database.php';
 class commentaire extends Database{
-    private $id_c;
+    
     private $id_client;
     private $id_article;
     private $titre_com;
@@ -51,10 +51,10 @@ class commentaire extends Database{
     }
 
     public function listerParArticle($idArticle){
-        $sql = "SELECT c* FROM commentaires c
-        INNER JOIN articles ON  c.id_article = a.id
-        WHERE c.id_article = idarticle 
-        ORDER BY c.date_commentaire DESC";
+        $sql = "SELECT c.* FROM commentaires c
+        JOIN articles ON  c.id_article = a.id
+        WHERE c.id_article = :idarticle 
+        ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':idarticle', $idArticle, PDO::PARAM_INT);
         $stmt->execute();

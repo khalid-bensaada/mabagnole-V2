@@ -53,14 +53,9 @@ class article extends Database {
     }
 
     public function listerParTheme($idTheme){
-        $sql = "SELECT a.* FROM articles a
-        INNER JOIN themes t ON a.id_theme = t.id
-        WHERE a.id_theme = :idTheme
-        ORDER BY a.date_publication DESC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':idTheme', $idTheme, PDO::PARAM_INT);
+        $sql="SELECT * FROM articles where id_theme=:idTheme";
+         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
