@@ -53,9 +53,9 @@ class article extends Database {
     }
 
     public function listerParTheme($idTheme){
-        $sql="SELECT * FROM articles where id_theme=:idTheme";
+        $sql="SELECT * FROM articles where id_theme = ?";
          $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([$idTheme]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

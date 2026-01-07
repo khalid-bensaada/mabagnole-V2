@@ -51,14 +51,9 @@ class commentaire extends Database{
     }
 
     public function listerParArticle($idArticle){
-        $sql = "SELECT c.* FROM commentaires c
-        JOIN articles ON  c.id_article = a.id
-        WHERE c.id_article = :idarticle 
-        ";
+        $sql="SELECT * FROM commentaires where id_article=:idArticle";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':idarticle', $idArticle, PDO::PARAM_INT);
-        $stmt->execute();
-
+        $stmt->execute([$idArticle]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
