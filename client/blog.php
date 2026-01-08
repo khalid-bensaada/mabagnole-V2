@@ -43,7 +43,7 @@
 
                     <div class="p-8">
                         <div class="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-4">
-                            <i class="far fa-calendar"></i> <?= $article["created_at"] ?> <i class="far fa-clock"></i>
+                            <i class="far fa-calendar"></i>  <i class="far fa-clock"></i>
                         </div>
                         <h2 class="text-xl font-black mb-4 leading-tight group-hover:text-blue-600 transition">
                             <a href="blog-article.php?id="></a>

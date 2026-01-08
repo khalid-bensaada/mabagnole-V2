@@ -1,6 +1,7 @@
 <?php
 require_once 'Database.php';
-class article extends Database {
+class article extends Database
+{
     private $id_article;
     private $id_theme;
     private $id_client;
@@ -10,62 +11,99 @@ class article extends Database {
     private $date;
     private $status;
 
-    public function __construct($id_theme,$id_client,$titre_article,$contenu,$tags,$date,$status){
+    public function __construct($id_theme, $id_client, $titre_article, $contenu, $tags, $date, $status)
+    {
         parent::__construct();
-        $this->id_theme=$id_theme;
-        $this->id_client=$id_client;
-        $this->titre_article=$titre_article;
-        $this->contenu=$contenu;
-        $this->tags=$tags;
-        $this->status=$status;
-        $this->date = $date ;
+        $this->id_theme = $id_theme;
+        $this->id_client = $id_client;
+        $this->titre_article = $titre_article;
+        $this->contenu = $contenu;
+        $this->tags = $tags;
+        $this->status = $status;
+        $this->date = $date;
     }
 
-    public function gitTarticl(){
-        return $this->titre_article ;
+    public function gitTarticl()
+    {
+        return $this->titre_article;
     }
-    public function gitContenu(){
-        return $this->contenu ;
+    public function gitContenu()
+    {
+        return $this->contenu;
     }
-    public function gitTag(){
-        return $this->tags ;
+    public function gitTag()
+    {
+        return $this->tags;
     }
-    public function gitStatus(){
-        return $this->status ;
+    public function gitStatus()
+    {
+        return $this->status;
     }
-    public function gitDate(){
-        return $this->date ;
+    public function gitDate()
+    {
+        return $this->date;
     }
-    public function setTarticl($titre_article){
-        $this->titre_article=$titre_article;
+    public function setTarticl($titre_article)
+    {
+        $this->titre_article = $titre_article;
     }
-    public function setContenu($contenu){
-        $this->contenu=$contenu;
+    public function setContenu($contenu)
+    {
+        $this->contenu = $contenu;
     }
-    public function setTag($tags){
-        $this->tags=$tags;
+    public function setTag($tags)
+    {
+        $this->tags = $tags;
     }
-    public function setStatus($status){
-        $this->status=$status;
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
-    public function setDate($date){
-        $this->date = $date ;
+    public function setDate($date)
+    {
+        $this->date = $date;
     }
 
-    public function listerParTheme($idTheme){
-        $sql="SELECT * FROM articles where id_theme = ?";
-         $stmt = $this->pdo->prepare($sql);
+    public static function listerParTheme(PDO $pdo,$idTheme)
+    {
+        $sql = "SELECT * FROM articles where id_theme = ?";
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$idTheme]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findById($id){
+    public static function findById(PDO $pdo,$id)
+    {
         $sql = "SELECT * FROM articles 
         WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public static function getAllPublies(PDO $pdo)
+    {
+        $sql = "
+        SELECT * FROM articles 
+        WHERE statut = 'publie'
+    ";
 
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function rechercherParTitre(PDO $pdo, string $motCle)
+    {
+        $sql = "
+        SELECT *
+        FROM articles 
+        WHERE statut = 'publie'
+        AND titre LIKE :motCle
+    ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$motCle]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
-?>
